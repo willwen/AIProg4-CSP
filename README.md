@@ -1,18 +1,18 @@
 # AIProg4-CSP
+domain( set of items)
+range (set of bags)
 
+Will:
+-make a heuristic( hashmap) returns 1 in domain that has least amount of ranges
 
-ryan:
-read txt from command line
-parse int and chars.
-be able to tell what rule those int and chars are for
---input.java
+Ryan: Tree.java
+-bfs + tree of items.
+- be able to run BFS and pick the path returned by heurisitic
+- constantly update hashmap, based on choices.
 
-will:
--main.java hold algo for create tree
--hold the set of all variables and bags.
-- hold all rules.
+Will:
+- del from hashmap based on rules.	
 
-class bag, item
+---------------------------
+output to txt
 
-methods for creating rules 
-ex.   unaryinclusive(char item1, item2);
