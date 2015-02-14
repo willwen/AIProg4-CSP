@@ -37,7 +37,7 @@ public class Sorting {
 			unaryConstraints.add(new ExclusiveUnaryConstraint(type, item, b));
 		return;
 	}
-	public void makeBinaryAndAdd(TypeBinaryConstraint type,  ArrayList<Item> i){
+	public void makeBinaryAndAdd(TypeBinaryConstraint type,  ArrayList<Item> i, ArrayList<Bag> j){
 		if (type == TypeBinaryConstraint.equal){
 			binaryConstraints.add(new EqualBinaryConstraint(type, i));
 		}
@@ -46,7 +46,7 @@ public class Sorting {
 
 		}
 		else if (type == TypeBinaryConstraint.mutualEx){
-			binaryConstraints.add(new MutualExclusiveBinaryConstraint(type, i));
+			binaryConstraints.add(new MutualExclusiveBinaryConstraint(type, i, j));
 
 		}
 	}

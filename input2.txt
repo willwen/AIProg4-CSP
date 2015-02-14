@@ -1,6 +1,7 @@
 ##### - variables
 C 10
 D 11
+E 13
 ##### - values
 p 10
 q 10
@@ -8,8 +9,12 @@ q 10
 1 1
 ##### - unary inclusive
 C p
+D q
 ##### - unary exclusive
 C q
+D p
 ##### - binary equals
 ##### - binary not equals
+C D
 ##### - binary simultaneous
+C D p q

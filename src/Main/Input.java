@@ -18,7 +18,7 @@ public class Input {
 	static LinkedList<ExclusiveUnaryConstraint> excConstraints = new LinkedList<ExclusiveUnaryConstraint>();
 	static LinkedList<EqualBinaryConstraint> eqlBinConstraints = new LinkedList<EqualBinaryConstraint>();
 	static LinkedList<NonEqualBinaryConstraint> nonEqlBinConstraints = new LinkedList<NonEqualBinaryConstraint>();
-	static LinkedList<MutualExclusiveBinaryConstraint> mutExcConstraints = new LinkedList<MutualExclusiveBinaryConstraint>();
+	static LinkedList<MutualExclusiveBinaryConstraint> mutExcBinConstraints = new LinkedList<MutualExclusiveBinaryConstraint>();
 
 	public static void main(String[] args) throws IOException {
 		getInput(args);
@@ -73,26 +73,25 @@ public class Input {
 					System.out.println(upperLimit);
 					break;
 				case 4:
-
 					while (scanner.hasNext()) {
-						itemLoop: for (Item v : items) {
+						char next = scanner.next().charAt(0);
+						for (Item v : items) {
 							InclusiveUnaryConstraint incConst;
 							scanner.useDelimiter(" ");
-							char next = scanner.next().charAt(0);
+
 							if (v.name == next) {
 								System.out.print(v.name + " ");
 								ArrayList<Bag> incBags = new ArrayList<Bag>();
 
 								while (scanner.hasNext()) {
-									bagLoop: for (Bag b : bags) {
-										char temp = scanner.next().charAt(0);
+									char temp = scanner.next().charAt(0);
+									for (Bag b : bags) {
+										
 										if (b.name == temp) {
 											System.out.print(temp + " ");
 											incBags.add(b);
 
 										}
-										break bagLoop;
-
 									}
 								}
 
@@ -103,30 +102,31 @@ public class Input {
 
 								System.out.println();
 							}
-							break itemLoop;
 						}
 
 					}
 					break;
 				case 5:
 					while (scanner.hasNext()) {
-						itemLoop: for (Item v : items) {
+						char next = scanner.next().charAt(0);
+						for (Item v : items) {
 							ExclusiveUnaryConstraint excConst;
-
 							scanner.useDelimiter(" ");
-							char next = scanner.next().charAt(0);
+							
 							if (v.name == next) {
 								System.out.print(v.name + " ");
 								ArrayList<Bag> excBags = new ArrayList<Bag>();
 
 								while (scanner.hasNext()) {
-									bagLoop: for (Bag b : bags) {
-										if (b.name == next) {
-											System.out.print(next + " ");
+									
+									char temp = scanner.next().charAt(0);
+									for (Bag b : bags) {
+										
+										if (b.name == temp) {
+											System.out.print(temp + " ");
 											excBags.add(b);
-										}
-										break bagLoop;
 
+										}
 									}
 								}
 
@@ -137,8 +137,8 @@ public class Input {
 
 								System.out.println();
 							}
-							break itemLoop;
 						}
+
 					}
 					break;
 				case 6:
@@ -192,7 +192,40 @@ public class Input {
 
 					break;
 				case 8:
+					MutualExclusiveBinaryConstraint mutExBinConst;
+					ArrayList<Item> mutExVariables = new ArrayList<Item>();
+					ArrayList<Bag> mutExValues = new ArrayList<Bag>();
 
+					scanner.useDelimiter(" ");
+
+					while (scanner.hasNext()) {
+						char next = scanner.next().charAt(0);
+
+						
+						for (Item i : items) {
+							if (i.name == next) {
+								mutExVariables.add(i);
+
+								System.out.print(next + " ");
+							}
+						}
+						
+						for (Bag b : bags) {
+							if (b.name == next) {
+								mutExValues.add(b);
+
+								System.out.print(next + " ");
+							}
+						}
+					}
+
+					mutExBinConst = new MutualExclusiveBinaryConstraint(
+							TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
+					mutExcBinConstraints.add(mutExBinConst);
+
+					System.out.println();
+
+					break;
 				}
 
 			scanner.close();
