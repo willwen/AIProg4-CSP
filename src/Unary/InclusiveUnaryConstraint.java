@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import Main.Bag;
 
 
-public class InclusiveUnaryConstraints extends AbsUnaryConstraints{
+public class InclusiveUnaryConstraint extends AbsUnaryConstraint{
 
-	public InclusiveUnaryConstraints(TypeUnaryConstraint type, Item i, ArrayList<Bag> b) {
+	public InclusiveUnaryConstraint(TypeUnaryConstraint type, Item i, ArrayList<Bag> b) {
 		super(type, i, b);
 		// TODO Auto-generated constructor stub
 	}

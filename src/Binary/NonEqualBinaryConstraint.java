@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import Main.Item;
 
-public class NonEqualBinaryConstraint extends AbsBinaryConstraints {
+public class NonEqualBinaryConstraint extends AbsBinaryConstraint {
 
 	public NonEqualBinaryConstraint(TypeBinaryConstraint type,
 			ArrayList<Item> variables) {

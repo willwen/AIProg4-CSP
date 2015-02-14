@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import Main.Item;
 
-public class EqualBinaryConstraint extends AbsBinaryConstraints{
+public class EqualBinaryConstraint extends AbsBinaryConstraint{
 
 	public EqualBinaryConstraint(TypeBinaryConstraint type, ArrayList<Item> variables) {
 		super(type, variables);

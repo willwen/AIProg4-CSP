@@ -9,8 +9,8 @@ public class Sorting {
 	ArrayList <Item> allItems = new ArrayList<Item>();
 	ArrayList <Bag> allBags = new ArrayList<Bag>();
 	FitLimit fitRule;
-	ArrayList <AbsUnaryConstraints> unaryConstraints = new ArrayList<AbsUnaryConstraints>();
-	ArrayList <AbsBinaryConstraints> binaryConstraints = new ArrayList<AbsBinaryConstraints>();
+	ArrayList <AbsUnaryConstraint> unaryConstraints = new ArrayList<AbsUnaryConstraint>();
+	ArrayList <AbsBinaryConstraint> binaryConstraints = new ArrayList<AbsBinaryConstraint>();
 
 	Sorting(){
 		
@@ -32,9 +32,9 @@ public class Sorting {
 	public void makeConstraintAndAdd(TypeUnaryConstraint type, Item item, ArrayList<Bag> b){
 			
 		if(type == TypeUnaryConstraint.inclusive)
-			unaryConstraints.add(new InclusiveUnaryConstraints(type, item, b));
+			unaryConstraints.add(new InclusiveUnaryConstraint(type, item, b));
 		else if(type == TypeUnaryConstraint.exclusive)
-			unaryConstraints.add(new ExclusiveUnaryConstraints(type, item, b));
+			unaryConstraints.add(new ExclusiveUnaryConstraint(type, item, b));
 		return;
 	}
 	public void makeBinaryAndAdd(TypeBinaryConstraint type,  ArrayList<Item> i){
@@ -46,7 +46,7 @@ public class Sorting {
 
 		}
 		else if (type == TypeBinaryConstraint.mutualEx){
-			binaryConstraints.add(new MutualExclusiveBinary(type, i));
+			binaryConstraints.add(new MutualExclusiveBinaryConstraint(type, i));
 
 		}
 	}

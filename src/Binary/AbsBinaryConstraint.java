@@ -5,11 +5,11 @@ import java.util.ArrayList;
 //variables = items
 //values = bags;
 
-public abstract class AbsBinaryConstraints {
+public abstract class AbsBinaryConstraint {
 		TypeBinaryConstraint type;
 		ArrayList<Item> variables;
 		
-		AbsBinaryConstraints(TypeBinaryConstraint type, ArrayList<Item> variables){
+		AbsBinaryConstraint(TypeBinaryConstraint type, ArrayList<Item> variables){
 			this.type = type;
 			this.variables = variables;
 		}
