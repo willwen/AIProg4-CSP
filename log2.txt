@@ -1,0 +1,7 @@
+
+options fowardChecking: false heuristics: false arcConsistency: false
+Trying variable: C
+Trying value: p
+Removed <variable, value>: C, p
+Trying value: q
+Removed <variable, value>: C, q

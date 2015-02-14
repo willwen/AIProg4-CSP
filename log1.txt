@@ -1,0 +1,44 @@
+
+options fowardChecking: false heuristics: false arcConsistency: false
+Trying variable: C
+Trying value: p
+Added <variable, value>: C, p
+Trying variable: D
+Trying value: p
+Removed <variable, value>: D, p
+Trying value: q
+Added <variable, value>: D, q
+
+options fowardChecking: true heuristics: false arcConsistency: false
+Trying variable: C
+Trying value: p
+Added <variable, value>: C, p
+Trying variable: D
+Trying value: p
+Removed <variable, value>: D, p
+Trying value: q
+Added <variable, value>: D, q
+
+options fowardChecking: false heuristics: true arcConsistency: false
+Trying variable: C
+Trying value: p
+Added <variable, value>: C, p
+Trying variable: D
+Trying value: q
+Added <variable, value>: D, q
+
+options fowardChecking: true heuristics: true arcConsistency: false
+Trying variable: C
+Trying value: p
+Added <variable, value>: C, p
+Trying variable: D
+Trying value: q
+Added <variable, value>: D, q
+
+options fowardChecking: false heuristics: true arcConsistency: true
+Trying variable: C
+Trying value: p
+Added <variable, value>: C, p
+Trying variable: D
+Trying value: q
+Added <variable, value>: D, q

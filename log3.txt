@@ -1,0 +1,10 @@
+
+options fowardChecking: false heuristics: false arcConsistency: false
+
+options fowardChecking: true heuristics: false arcConsistency: false
+
+options fowardChecking: false heuristics: true arcConsistency: false
+
+options fowardChecking: true heuristics: true arcConsistency: false
+
+options fowardChecking: false heuristics: true arcConsistency: true

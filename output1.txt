@@ -1,0 +1,9 @@
+p C 
+number of items: 1
+total weight: 14
+wasted capacity: 1
+
+q D 
+number of items: 1
+total weight: 14
+wasted capacity: 1

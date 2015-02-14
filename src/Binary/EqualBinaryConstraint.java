@@ -2,7 +2,6 @@ package Binary;
 
 import java.util.ArrayList;
 
-import Main.Bag;
 import Main.Item;
 
 public class EqualBinaryConstraint extends AbsBinaryConstraints{
