@@ -58,19 +58,24 @@ public class Sorting {
 	public void trimMapUnary() {
 		for (AbsUnaryConstraint uc : unaryConstraints) {
 			ArrayList<Bag> oldPossibleBags = initialMap.get(uc.getItem()); //first pull out all possible ones of this item.
-			ArrayList<Bag> newBagToInsert = new ArrayList <Bag> ();
 			if (uc.getType() == TypeUnaryConstraint.inclusive) {
+				ArrayList<Bag> newBagToInsert = new ArrayList <Bag> ();
+
 				for (Bag b : uc.getBags()) { // rules "A p q r s"
 					//only keep the p, q , r ,s as the possible bags for A
 					newBagToInsert .add(b);
 				}
 				initialMap.put(uc.getItem(), newBagToInsert);
 			} else if (uc.getType() == TypeUnaryConstraint.exclusive) {
+				ArrayList<Bag> newBagToInsert = new ArrayList <Bag> (oldPossibleBags);
+
 				for (Bag b : uc.getBags()) { // rules "A p q r s"
-					if (oldPossibleBags.contains(b)) {
-						oldPossibleBags.remove(b);
+					if (newBagToInsert.contains(b)) {
+						newBagToInsert.remove(b);
 					}
 				}
+				initialMap.put(uc.getItem(), newBagToInsert);
+
 			}
 			// initialMap.put(uc.getItem(), newBagToInsert); //overwrite old
 			// map.
