@@ -19,15 +19,31 @@ public class Input {
 	static LinkedList<EqualBinaryConstraint> eqlBinConstraints = new LinkedList<EqualBinaryConstraint>();
 	static LinkedList<NonEqualBinaryConstraint> nonEqlBinConstraints = new LinkedList<NonEqualBinaryConstraint>();
 	static LinkedList<MutualExclusiveBinaryConstraint> mutExcBinConstraints = new LinkedList<MutualExclusiveBinaryConstraint>();
+	static Sorting sorter = new Sorting();
 
 	public static void main(String[] args) throws IOException {
 		getInput(args);
+		
+		sorter.initializeMap();
+		
+		sorter.trimMapUnary();
+		
+		//while(!sorter.allItems.isEmpty()){
+			for(Item i : sorter.allItems){
+				System.out.print("Item: " + i.name + " ");
+				System.out.print("Possible Bags:");
+				for(Bag b : sorter.initialMap.get(i)){
+					System.out.print(" " + b.name);
+				}
+				System.out.println();
+			}
+		//}
 	}
 
 	public static void getInput(String[] args) throws IOException {
 		Scanner inputFile = new Scanner(new File(args[0]));
-		LinkedList<Item> items = new LinkedList<Item>();
-		LinkedList<Bag> bags = new LinkedList<Bag>();
+		ArrayList<Item> items = new ArrayList<Item>();
+		ArrayList<Bag> bags = new ArrayList<Bag>();
 
 		while (inputFile.hasNextLine()) {
 			String line = inputFile.nextLine();
@@ -39,21 +55,21 @@ public class Input {
 				System.out.println(line);
 			} else
 				switch (section) {
-				case 1:
+				case 1:  // Variables (Items)
 					Item var = new Item(scanner.next().charAt(0),
 							scanner.nextInt());
 					items.add(var);
 					System.out.print(var.name + " ");
 					System.out.println(var.weight);
 					break;
-				case 2:
+				case 2:  // Values (Bags)
 					Bag bag = new Bag(scanner.next().charAt(0),
 							scanner.nextInt());
 					bags.add(bag);
 					System.out.print(bag.name + " ");
 					System.out.println(bag.maxWeight);
 					break;
-				case 3:
+				case 3:  // Fitting Limits 
 					int lowerLimit = -1;
 					int upperLimit = 2147483647;
 					scanner.useDelimiter(" ");
@@ -69,10 +85,12 @@ public class Input {
 					FitLimit limit = new FitLimit(lowerLimit, upperLimit);
 					fitLimits.add(limit);
 
+					sorter.makeFitLimit(lowerLimit, upperLimit);
+					
 					System.out.print(lowerLimit + " ");
 					System.out.println(upperLimit);
 					break;
-				case 4:
+				case 4:  // Unary Inclusive
 					while (scanner.hasNext()) {
 						char next = scanner.next().charAt(0);
 						for (Item v : items) {
@@ -99,6 +117,8 @@ public class Input {
 										TypeUnaryConstraint.inclusive, v,
 										incBags);
 								incConstraints.add(incConst);
+								
+								sorter.makeUnaryAndAdd(TypeUnaryConstraint.inclusive, v, incBags);
 
 								System.out.println();
 							}
@@ -106,7 +126,7 @@ public class Input {
 
 					}
 					break;
-				case 5:
+				case 5:  // Unary Exclusive
 					while (scanner.hasNext()) {
 						char next = scanner.next().charAt(0);
 						for (Item v : items) {
@@ -134,6 +154,8 @@ public class Input {
 										TypeUnaryConstraint.exclusive, v,
 										excBags);
 								excConstraints.add(excConst);
+								
+								sorter.makeUnaryAndAdd(TypeUnaryConstraint.exclusive, v, excBags);
 
 								System.out.println();
 							}
@@ -141,7 +163,7 @@ public class Input {
 
 					}
 					break;
-				case 6:
+				case 6:  // Binary Equals
 					EqualBinaryConstraint eqlBinConst;
 					ArrayList<Item> eqlVariables = new ArrayList<Item>();
 
@@ -162,13 +184,15 @@ public class Input {
 					eqlBinConst = new EqualBinaryConstraint(
 							TypeBinaryConstraint.equal, eqlVariables);
 					eqlBinConstraints.add(eqlBinConst);
+					
+					sorter.makeBinaryAndAdd(TypeBinaryConstraint.equal, eqlVariables, null);
 
 					System.out.println();
 
 					break;
-				case 7:
+				case 7:  // Binary Not Equals
 					NonEqualBinaryConstraint nonEqlBinConst;
-					ArrayList<Item> nonEqlvariables = new ArrayList<Item>();
+					ArrayList<Item> nonEqlVariables = new ArrayList<Item>();
 
 					scanner.useDelimiter(" ");
 
@@ -177,7 +201,7 @@ public class Input {
 
 						for (Item i : items) {
 							if (i.name == next) {
-								nonEqlvariables.add(i);
+								nonEqlVariables.add(i);
 
 								System.out.print(next + " ");
 							}
@@ -185,13 +209,15 @@ public class Input {
 					}
 
 					nonEqlBinConst = new NonEqualBinaryConstraint(
-							TypeBinaryConstraint.nonEqual, nonEqlvariables);
+							TypeBinaryConstraint.nonEqual, nonEqlVariables);
 					nonEqlBinConstraints.add(nonEqlBinConst);
+					
+					sorter.makeBinaryAndAdd(TypeBinaryConstraint.nonEqual, nonEqlVariables, null);
 
 					System.out.println();
 
 					break;
-				case 8:
+				case 8:  // Binary Mutual Exclusive
 					MutualExclusiveBinaryConstraint mutExBinConst;
 					ArrayList<Item> mutExVariables = new ArrayList<Item>();
 					ArrayList<Bag> mutExValues = new ArrayList<Bag>();
@@ -222,15 +248,20 @@ public class Input {
 					mutExBinConst = new MutualExclusiveBinaryConstraint(
 							TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
 					mutExcBinConstraints.add(mutExBinConst);
+					
+					sorter.makeBinaryAndAdd(TypeBinaryConstraint.equal, mutExVariables, mutExValues);
 
 					System.out.println();
 
 					break;
 				}
-
+			
 			scanner.close();
 		}
 
 		inputFile.close();
+		
+		sorter.setAllItems(items);
+		sorter.setAllBags(bags);
 	}
 }

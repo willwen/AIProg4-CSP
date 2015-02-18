@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import Binary.TypeBinaryConstraint;
 import Main.Item;
 import Main.Bag;
 import Main.Sorting;
@@ -15,7 +14,7 @@ import Unary.TypeUnaryConstraint;
 public class testSorting {
 
 	@Test
-	public void testSorting() {
+	public void testAllSorting() {
 		fail("Not yet implemented");
 	}
 

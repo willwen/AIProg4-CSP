@@ -12,18 +12,7 @@ public abstract class AbsBinaryConstraint {
 
 	AbsBinaryConstraint(TypeBinaryConstraint type, ArrayList<Item> variables) {
 		this.type = type;
-		if (type != TypeBinaryConstraint.mutualEx) {
-			if (variables.size() == 2)
-				this.variables = variables;
-			else
-				throw new RuntimeException("why more than 2 items?");
-		} else {
-			if (variables.size() == 4)
-				this.variables = variables;
-			else
-				throw new RuntimeException("why more than 4 items?");
-
-		}
+		this.variables = variables;
 	}
 
 	public TypeBinaryConstraint getType() {
