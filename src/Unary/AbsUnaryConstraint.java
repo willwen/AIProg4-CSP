@@ -19,5 +19,29 @@ public abstract class AbsUnaryConstraint {
 		bags = b;
 				
 	}
+
+	public TypeUnaryConstraint getType() {
+		return type;
+	}
+
+	public void setType(TypeUnaryConstraint type) {
+		this.type = type;
+	}
+
+	public Item getItem() {
+		return i;
+	}
+
+	public void setI(Item i) {
+		this.i = i;
+	}
+
+	public ArrayList<Bag> getBags() {
+		return bags;
+	}
+
+	public void setBags(ArrayList<Bag> bags) {
+		this.bags = bags;
+	}
 }
 
