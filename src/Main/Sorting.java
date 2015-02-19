@@ -2,7 +2,6 @@ package Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.BinaryOperator;
 
 import Binary.*;
 import Unary.*;
@@ -21,141 +20,200 @@ public class Sorting {
 	}
 
 	// /try to put A in Bag a
-	public boolean moveIsValid(Item item, Bag bag,
-			HashMap<Item, ArrayList<Bag>> map) {
-		boolean didMoveHappen = false;
-		for (AbsBinaryConstraint b : binaryConstraints) {
-			if (b.getType() == TypeBinaryConstraint.nonEqual) {// b: A, B
-				// A and B cannot be in the same bag.
-				Item i1 = b.getVariables().get(0); // A
-				Item i2 = b.getVariables().get(1); // B
-				if (i1.equals(item)) {
-					if (map.get(i2).size() == 1) {
-						if (map.get(i2).get(0).equals(bag)) {
-							return false;
-						}
-					} else {
-						ArrayList<Bag> newToInsert = new ArrayList<Bag>(); // new
-																			// list
-																			// to
-																			// put
-																			// in
-						newToInsert.add(bag); // add this move ( this item will
-												// be put into that bag, so you
-												// can delete all other options
-						map.put(item, newToInsert); // overwrite and put this
-													// new move in
-						if (map.get(i2).contains(bag))
-							map.get(i2).remove(bag); // remove the possibility
-														// of putting i2 in that
-														// bag.
-						return true;
-					}
-
-				} else if (i2.equals(item)) {
-					if (map.get(i1).size() == 1) {
-						if (map.get(i1).get(0).equals(bag)) {
-							return false;
-						}
-					} else {
-						ArrayList<Bag> newToInsert = new ArrayList<Bag>(); // new
-																			// list
-																			// to
-																			// put
-																			// in
-						newToInsert.add(bag); // add this move ( this item will
-												// be put into that bag, so you
-												// can delete all other options
-						map.put(item, newToInsert); // overwrite and put this
-													// new move in
-						if (map.get(i1).contains(bag))
-							map.get(i1).remove(bag); // remove the possibility
-														// of
-						// putting i2 in that bag.
-						return true;
-					}
-				}
-
-			} else if (b.getType() == TypeBinaryConstraint.mutualEx) {
-				// The mutual exclusive binary constraints mean that the pair of
-				// assignments cannot both be made if one of the assignments is
-				// made.
-				// For example, a line "A B x y" means x cannot be assigned to A
-				// if y is assigned to B, and vice versa.
-				MutualExclusiveBinaryConstraint m = (MutualExclusiveBinaryConstraint) b;
-				Item val1 = m.getVariables().get(0);
-				Item val2 = m.getVariables().get(1);
-				Bag bag1 = m.getValues().get(0);
-				Bag bag2 = m.getValues().get(1);
-				ArrayList<Bag> bags1FromLocal = map.get(val1); // list of bags
-																// possible from
-																// local Map A
-				ArrayList<Bag> bags2FromLocal = map.get(val2);
-				if (item.equals(val1)) {
-					if (bag1.equals(bag)) { 
-						if (bags2FromLocal.size() == 1) { 
-							if (bags2FromLocal.contains(bag2)) {
-								return false;
-							}
-						}
-						else {
-							ArrayList<Bag> newToInsert = new ArrayList<Bag>();
-							newToInsert.add(bag);
-							map.put(item, newToInsert);
-							if (map.get(val2).contains(bag2))
-								map.get(val2).remove(bag2);
-							return true;
-						}
-					} else if (bag2.equals(bag)) { // B is the var we messin with
-						if (bags1FromLocal.size() == 1) {
-							if (bags1FromLocal.contains(bag2)) {
-								return false;
-							}
-						} else {
-							ArrayList<Bag> newToInsert = new ArrayList<Bag>();
-							newToInsert.add(bag);
-							map.put(item, newToInsert);
-							return true;
-						}
-					}
-				} else if (item.equals(val2)) {
-					if (bag1.equals(bag)) {
-						if (bags2FromLocal.size() == 1) { 
-							if (bags2FromLocal.contains(bag1)) { 
-								return false;
-							}
-							 else {
-									ArrayList<Bag> newToInsert = new ArrayList<Bag>();
-									newToInsert.add(bag);
-									map.put(item, newToInsert);
-									return true;
+	public boolean moveIsValid(Item item, Bag bag, HashMap<Item, ArrayList<Bag>> map) {
+		if (bag.itemAmount < fitRule.maxItems) {
+			if (bag.maxWeight >= (bag.accumWeight + item.weight)) {
+				for (AbsBinaryConstraint b : binaryConstraints) {
+					if (b.getType() == TypeBinaryConstraint.nonEqual) {// b: A,
+																		// B
+						// A and B cannot be in the same bag.
+						Item i1 = b.getVariables().get(0); // A
+						Item i2 = b.getVariables().get(1); // B
+						if (i1.equals(item)) {
+							if (map.get(i2).size() == 1) {
+								if (map.get(i2).get(0).equals(bag)) {
+									return false;
 								}
-						}
-
-					} else if (bag2.equals(bag)) {
-
-						if (bags1FromLocal.size() == 1) {
-							if (bags1FromLocal.contains(bag1)) {
-								return false;
 							} else {
-								ArrayList<Bag> newToInsert = new ArrayList<Bag>();
-								newToInsert.add(bag);
-								map.put(item, newToInsert);
-								if (map.get(val1).contains(bag1))
-									map.get(val1).remove(bag1);
+								ArrayList<Bag> newToInsert = new ArrayList<Bag>(); // new
+																					// list
+																					// to
+																					// put
+																					// in
+								newToInsert.add(bag); // add this move ( this
+														// item
+														// will
+														// be put into that bag,
+														// so
+														// you
+														// can delete all other
+														// options
+
+								bag.accumWeight += item.weight;
+								bag.itemAmount++;
+
+								map.put(item, newToInsert); // overwrite and put
+															// this
+															// new move in
+								if (map.get(i2).contains(bag))
+									map.get(i2).remove(bag); // remove the
+																// possibility
+																// of putting i2
+																// in
+																// that
+																// bag.
+								return true;
+							}
+
+						} else if (i2.equals(item)) {
+							if (map.get(i1).size() == 1) {
+								if (map.get(i1).get(0).equals(bag)) {
+									return false;
+								}
+							} else {
+								ArrayList<Bag> newToInsert = new ArrayList<Bag>(); // new
+																					// list
+																					// to
+																					// put
+																					// in
+								newToInsert.add(bag); // add this move ( this
+														// item
+														// will
+														// be put into that bag,
+														// so
+														// you
+														// can delete all other
+														// options
+
+								bag.accumWeight += item.weight;
+								bag.itemAmount++;
+
+								map.put(item, newToInsert); // overwrite and put
+															// this
+															// new move in
+								if (map.get(i1).contains(bag))
+									map.get(i1).remove(bag); // remove the
+																// possibility
+																// of
+								// putting i2 in that bag.
 								return true;
 							}
 						}
+
+					} else if (b.getType() == TypeBinaryConstraint.mutualEx) {
+						// The mutual exclusive binary constraints mean that the
+						// pair of
+						// assignments cannot both be made if one of the
+						// assignments
+						// is
+						// made.
+						// For example, a line "A B x y" means x cannot be
+						// assigned
+						// to A
+						// if y is assigned to B, and vice versa.
+						MutualExclusiveBinaryConstraint m = (MutualExclusiveBinaryConstraint) b;
+						Item val1 = m.getVariables().get(0);
+						Item val2 = m.getVariables().get(1);
+						Bag bag1 = m.getValues().get(0);
+						Bag bag2 = m.getValues().get(1);
+						ArrayList<Bag> bags1FromLocal = map.get(val1); // list
+																		// of
+																		// bags
+																		// possible
+																		// from
+																		// local
+																		// Map
+																		// A
+						ArrayList<Bag> bags2FromLocal = map.get(val2);
+						if (item.equals(val1)) {
+							if (bag1.equals(bag)) {
+								if (bags2FromLocal.size() == 1) {
+									if (bags2FromLocal.contains(bag2)) {
+										return false;
+									}
+								} else {
+									ArrayList<Bag> newToInsert = new ArrayList<Bag>();
+									newToInsert.add(bag);
+
+									bag.accumWeight += item.weight;
+									bag.itemAmount++;
+
+									map.put(item, newToInsert);
+									if (map.get(val2).contains(bag2))
+										map.get(val2).remove(bag2);
+									return true;
+								}
+							} else if (bag2.equals(bag)) { // B is the var we
+															// messin
+															// with
+								if (bags1FromLocal.size() == 1) {
+									if (bags1FromLocal.contains(bag2)) {
+										return false;
+									}
+								} else {
+									ArrayList<Bag> newToInsert = new ArrayList<Bag>();
+									newToInsert.add(bag);
+
+									bag.accumWeight += item.weight;
+									bag.itemAmount++;
+
+									map.put(item, newToInsert);
+									return true;
+								}
+							}
+						} else if (item.equals(val2)) {
+							if (bag1.equals(bag)) {
+								if (bags2FromLocal.size() == 1) {
+									if (bags2FromLocal.contains(bag1)) {
+										return false;
+									} else {
+										ArrayList<Bag> newToInsert = new ArrayList<Bag>();
+										newToInsert.add(bag);
+
+										bag.accumWeight += item.weight;
+										bag.itemAmount++;
+
+										map.put(item, newToInsert);
+										return true;
+									}
+								}
+
+							} else if (bag2.equals(bag)) {
+
+								if (bags1FromLocal.size() == 1) {
+									if (bags1FromLocal.contains(bag1)) {
+										return false;
+									} else {
+										ArrayList<Bag> newToInsert = new ArrayList<Bag>();
+										newToInsert.add(bag);
+
+										bag.accumWeight += item.weight;
+										bag.itemAmount++;
+
+										map.put(item, newToInsert);
+										if (map.get(val1).contains(bag1))
+											map.get(val1).remove(bag1);
+										return true;
+									}
+								}
+							}
+						}
 					}
+
 				}
-			}
+				ArrayList<Bag> newToInsert = new ArrayList<Bag>();
+				newToInsert.add(bag);
 
-		}
-		ArrayList <Bag> newToInsert = new ArrayList<Bag>();
-		newToInsert.add(bag);
-		map.put(item, newToInsert);
+				bag.accumWeight += item.weight;
+				bag.itemAmount++;
 
-		return true;
+				map.put(item, newToInsert);
+
+				return true;
+			} else
+				return false;
+		} else
+			return false;
 	}
 
 	// can we put this item i in bag b without breaking a binary constraint?
@@ -212,8 +270,7 @@ public class Sorting {
 				}
 				initialMap.put(uc.getItem(), newBagToInsert);
 			} else if (uc.getType() == TypeUnaryConstraint.exclusive) {
-				ArrayList<Bag> newBagToInsert = new ArrayList<Bag>(
-						oldPossibleBags);
+				ArrayList<Bag> newBagToInsert = new ArrayList<Bag>(oldPossibleBags);
 
 				for (Bag b : uc.getBags()) { // rules "A p q r s"
 					if (newBagToInsert.contains(b)) {
@@ -243,10 +300,8 @@ public class Sorting {
 				// ASSUME
 				// Binary constraints contain two variables (items).
 				// from course website.
-				ArrayList<Bag> var1Options = initialMap.get(bc.getVariables()
-						.get(0));
-				ArrayList<Bag> var2Options = initialMap.get(bc.getVariables()
-						.get(1));
+				ArrayList<Bag> var1Options = initialMap.get(bc.getVariables().get(0));
+				ArrayList<Bag> var2Options = initialMap.get(bc.getVariables().get(1));
 				ArrayList<Bag> sameBags = new ArrayList<Bag>();
 				for (Bag b : var1Options) {
 					if (var2Options.contains(b)) {
@@ -317,8 +372,7 @@ public class Sorting {
 		fitRule = new FitLimit(min, max);
 	}
 
-	public void makeUnaryAndAdd(TypeUnaryConstraint type, Item item,
-			ArrayList<Bag> b) {
+	public void makeUnaryAndAdd(TypeUnaryConstraint type, Item item, ArrayList<Bag> b) {
 
 		if (type == TypeUnaryConstraint.inclusive)
 			unaryConstraints.add(new InclusiveUnaryConstraint(type, item, b));
@@ -327,16 +381,14 @@ public class Sorting {
 		return;
 	}
 
-	public void makeBinaryAndAdd(TypeBinaryConstraint type, ArrayList<Item> i,
-			ArrayList<Bag> j) {
+	public void makeBinaryAndAdd(TypeBinaryConstraint type, ArrayList<Item> i, ArrayList<Bag> j) {
 		if (type == TypeBinaryConstraint.equal) {
 			binaryConstraints.add(new EqualBinaryConstraint(type, i));
 		} else if (type == TypeBinaryConstraint.nonEqual) {
 			binaryConstraints.add(new EqualBinaryConstraint(type, i));
 
 		} else if (type == TypeBinaryConstraint.mutualEx) {
-			binaryConstraints.add(new MutualExclusiveBinaryConstraint(type, i,
-					j));
+			binaryConstraints.add(new MutualExclusiveBinaryConstraint(type, i, j));
 
 		}
 	}
@@ -357,20 +409,19 @@ public class Sorting {
 		int smallestSeen = 100;
 		Item minItem = allItems.get(0);
 		boolean allDone = false;
-		if (map.get(minItem).size() < 2){
+		if (map.get(minItem).size() < 2) {
 			allDone = true;
 		}
-			
+
 		for (Item i : allItems) {
-			if ((map.get(i).size() >= minCount)
-					&& (map.get(i).size() < smallestSeen)) {
+			if ((map.get(i).size() >= minCount) && (map.get(i).size() < smallestSeen)) {
 				smallestSeen = map.get(i).size();
 				minItem = i;
 			}
 		}
-		if(minItem != allItems.get(0))
+		if (minItem != allItems.get(0))
 			allDone = false;
-		if(allDone)
+		if (allDone)
 			return null;
 		return minItem;
 	}
@@ -403,8 +454,7 @@ public class Sorting {
 		return unaryConstraints;
 	}
 
-	public void setUnaryConstraints(
-			ArrayList<AbsUnaryConstraint> unaryConstraints) {
+	public void setUnaryConstraints(ArrayList<AbsUnaryConstraint> unaryConstraints) {
 		this.unaryConstraints = unaryConstraints;
 	}
 
@@ -412,8 +462,7 @@ public class Sorting {
 		return binaryConstraints;
 	}
 
-	public void setBinaryConstraints(
-			ArrayList<AbsBinaryConstraint> binaryConstraints) {
+	public void setBinaryConstraints(ArrayList<AbsBinaryConstraint> binaryConstraints) {
 		this.binaryConstraints = binaryConstraints;
 	}
 

@@ -5,11 +5,13 @@ public class Bag {
 	char name;
 	int maxWeight;
 	int accumWeight;
+	int itemAmount;
 	
 	public Bag (char name, int maxWeight){
 		this.name = name;
 		this.maxWeight = maxWeight;
 		this.accumWeight = 0;
+		this.itemAmount = 0;
 		
 	}
 

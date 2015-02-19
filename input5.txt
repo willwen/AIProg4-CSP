@@ -10,11 +10,17 @@ J 19
 K 4
 L 9
 ##### - values
-p 40
-q 55
+p 32
+q 25
+r 20
+x 14
 ##### - fitting limits
-5 5
+2 3
 ##### - unary inclusive
+C q r
+D p q
+H q r x
+K p q
 ##### - unary exclusive
 ##### - binary equals
 ##### - binary not equals

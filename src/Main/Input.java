@@ -1,9 +1,9 @@
 package Main;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -14,7 +14,7 @@ public class Input {
 
 	static int section = 0;
 
-	static LinkedList<FitLimit> fitLimits = new LinkedList<FitLimit>();
+	static FitLimit fitLimit;
 	static LinkedList<InclusiveUnaryConstraint> incConstraints = new LinkedList<InclusiveUnaryConstraint>();
 	static LinkedList<ExclusiveUnaryConstraint> excConstraints = new LinkedList<ExclusiveUnaryConstraint>();
 	static LinkedList<EqualBinaryConstraint> eqlBinConstraints = new LinkedList<EqualBinaryConstraint>();
@@ -23,18 +23,21 @@ public class Input {
 	static Sorting sorter = new Sorting();
 
 	public static void main(String[] args) throws IOException {
+
+		FileWriter writer = new FileWriter("output.txt");
+
 		getInput(args);
-		
+
 		ArrayList<Item> hand = new ArrayList<Item>(sorter.allItems);
-		
+
 		sorter.initializeMap();
-		
+
 		sorter.trimMapUnary();
-		
-		for(Item i : sorter.allItems){
+
+		for (Item i : sorter.allItems) {
 			System.out.print("Item: " + i.name + " ");
 			System.out.print("Possible Bags:");
-			for(Bag b : sorter.initialMap.get(i)){
+			for (Bag b : sorter.initialMap.get(i)) {
 				System.out.print(" " + b.name);
 			}
 			System.out.println();
@@ -43,56 +46,127 @@ public class Input {
 
 		Item initialItem = sorter.itemWithLeastRange(sorter.initialMap);
 		System.out.println("Item with least Range: " + initialItem.name);
-		
-//		HashMap <Item, ArrayList <Bag>> test = new HashMap <Item , ArrayList<Bag>>(sorter.initialMap);
-//		sorter.moveIsValid(initialItem, sorter.initialMap.get(initialItem).get(0), test);
-//		
-//		for(Item i : sorter.allItems){
-//			System.out.print("Item: " + i.name + " ");
-//			System.out.print("Possible Bags:");
-//			for(Bag b : test.get(i)){
-//				System.out.print(" " + b.name);
-//			}
-//			System.out.println();
-//		}
-		
+
 		Node tree = new Node(initialItem, sorter.initialMap);
-		whileLoop:
-		while(!hand.isEmpty()){
-			findItemLoop:
-			for(Item i : sorter.allItems){
-				if( i.name == tree.item.name){
-					for(Bag b : sorter.initialMap.get(i)){
-						//Willsfunction(i, b, localmap) return true or false if possible placement based on constraints
-						if(sorter.moveIsValid(i, b, tree.localMap)){
-							// Update Hashmap and assign(clone) to tree.localMap
-							
-							
-							for(Item val : sorter.allItems){
-								System.out.print("Item: " + val.name + " ");
-								System.out.print("Possible Bags:");
-								for(Bag bal : tree.localMap.get(val)){
-									System.out.print(" " + bal.name);
+		boolean madeMove = true;
+
+		ArrayList<Bag> emptyBags = new ArrayList<Bag>();
+
+		whileLoop: while (!hand.isEmpty() && madeMove == true) {
+			madeMove = false;
+			findItemLoop: for (Item i : sorter.allItems) {
+				if (i.name == tree.item.name) {
+					for (Bag possibleBag : sorter.initialMap.get(i)) {
+						if (possibleBag.itemAmount < sorter.fitRule.minItems) {
+							emptyBags.add(possibleBag);
+						}
+					}
+					if (emptyBags.size() > 0) {
+						for (Bag b : emptyBags) {
+							if (sorter.moveIsValid(i, b, tree.localMap)) {
+								for (Item val : sorter.allItems) {
+									System.out.print("Item: " + val.name + " ");
+									System.out.print("Possible Bags:");
+									for (Bag bal : tree.localMap.get(val)) {
+										System.out.print(" " + bal.name);
+									}
+									System.out.println();
 								}
 								System.out.println();
+
+								Item returnedItem = sorter.itemWithLeastRange(tree.localMap);
+								if (returnedItem == null) {
+									madeMove = true;
+									break whileLoop;
+								}
+								tree.item = returnedItem;
+								hand.remove(i);
+
+								madeMove = true;
+
+								break findItemLoop;
 							}
-							System.out.println();
-							
-							Item returnedItem = sorter.itemWithLeastRange(tree.localMap);
-							if(returnedItem == null)
-								break whileLoop;
-							tree.item = returnedItem;
-							hand.remove(i);
-							
-							break findItemLoop;		
-						}						
+						}
+					} else {
+						for (Bag b : sorter.initialMap.get(i)) {
+							if (sorter.moveIsValid(i, b, tree.localMap)) {
+								// Update Hashmap and assign(clone) to
+								// tree.localMap
+
+								for (Item val : sorter.allItems) {
+									System.out.print("Item: " + val.name + " ");
+									System.out.print("Possible Bags:");
+									for (Bag bal : tree.localMap.get(val)) {
+										System.out.print(" " + bal.name);
+									}
+									System.out.println();
+								}
+								System.out.println();
+
+								Item returnedItem = sorter.itemWithLeastRange(tree.localMap);
+								if (returnedItem == null) {
+									madeMove = true;
+									break whileLoop;
+								}
+								tree.item = returnedItem;
+								hand.remove(i);
+
+								madeMove = true;
+
+								break findItemLoop;
+							}
+						}
 					}
 				}
 			}
 		}
-	}
-	
 
+		if (!madeMove) {
+			System.out.println("No space left for placing items!");
+			writer.append("No solution found");
+			System.out.println();
+			writer.append('\n');
+		} else {
+
+			for (Bag bal : sorter.allBags) {
+				System.out.print("Bag: " + bal.name);
+				System.out.println("	-> current weight: " + bal.accumWeight);
+				System.out.println("	-> max weight: " + bal.maxWeight);
+				System.out.println("	-> remaining weight: " + (bal.maxWeight - bal.accumWeight));
+				System.out.println("	-> items in bag: " + bal.itemAmount);
+			}
+			System.out.println();
+
+			for (Bag bag : sorter.allBags) {
+				System.out.print(bag.name);
+				writer.append(bag.name);
+				for (Item item : sorter.allItems) {
+					if (tree.localMap.get(item).get(0).equals(bag)) {
+						System.out.print(" " + item.name);
+						writer.append(' ');
+						writer.append(item.name);
+					}
+				}
+				System.out.println();
+				writer.append('\n');
+				System.out.println("number of items: " + bag.itemAmount);
+				writer.append("number of items: " + bag.itemAmount);
+				writer.append('\n');
+				System.out.println("total weight: " + bag.accumWeight + "/" + bag.maxWeight);
+				writer.append("total weight: " + bag.accumWeight + "/" + bag.maxWeight);
+				writer.append('\n');
+				System.out.println("wasted capacity: " + (bag.maxWeight - bag.accumWeight));
+				writer.append("wasted capacity: " + (bag.maxWeight - bag.accumWeight));
+				writer.append('\n');
+				System.out.println();
+				writer.append('\n');
+			}
+		}
+
+		writer.flush();
+		writer.close();
+
+	}
 
 	public static void getInput(String[] args) throws IOException {
 		Scanner inputFile = new Scanner(new File(args[0]));
@@ -109,21 +183,19 @@ public class Input {
 				System.out.println(line);
 			} else
 				switch (section) {
-				case 1:  // Variables (Items)
-					Item var = new Item(scanner.next().charAt(0),
-							scanner.nextInt());
+				case 1: // Variables (Items)
+					Item var = new Item(scanner.next().charAt(0), scanner.nextInt());
 					items.add(var);
 					System.out.print(var.name + " ");
 					System.out.println(var.weight);
 					break;
-				case 2:  // Values (Bags)
-					Bag bag = new Bag(scanner.next().charAt(0),
-							scanner.nextInt());
+				case 2: // Values (Bags)
+					Bag bag = new Bag(scanner.next().charAt(0), scanner.nextInt());
 					bags.add(bag);
 					System.out.print(bag.name + " ");
 					System.out.println(bag.maxWeight);
 					break;
-				case 3:  // Fitting Limits 
+				case 3: // Fitting Limits
 					int lowerLimit = -1;
 					int upperLimit = 2147483647;
 					scanner.useDelimiter(" ");
@@ -136,15 +208,14 @@ public class Input {
 						}
 					}
 
-					FitLimit limit = new FitLimit(lowerLimit, upperLimit);
-					fitLimits.add(limit);
+					fitLimit = new FitLimit(lowerLimit, upperLimit);
 
 					sorter.makeFitLimit(lowerLimit, upperLimit);
-					
+
 					System.out.print(lowerLimit + " ");
 					System.out.println(upperLimit);
 					break;
-				case 4:  // Unary Inclusive
+				case 4: // Unary Inclusive
 					while (scanner.hasNext()) {
 						char next = scanner.next().charAt(0);
 						for (Item v : items) {
@@ -158,7 +229,7 @@ public class Input {
 								while (scanner.hasNext()) {
 									char temp = scanner.next().charAt(0);
 									for (Bag b : bags) {
-										
+
 										if (b.name == temp) {
 											System.out.print(temp + " ");
 											incBags.add(b);
@@ -167,11 +238,9 @@ public class Input {
 									}
 								}
 
-								incConst = new InclusiveUnaryConstraint(
-										TypeUnaryConstraint.inclusive, v,
-										incBags);
+								incConst = new InclusiveUnaryConstraint(TypeUnaryConstraint.inclusive, v, incBags);
 								incConstraints.add(incConst);
-								
+
 								sorter.makeUnaryAndAdd(TypeUnaryConstraint.inclusive, v, incBags);
 
 								System.out.println();
@@ -180,22 +249,22 @@ public class Input {
 
 					}
 					break;
-				case 5:  // Unary Exclusive
+				case 5: // Unary Exclusive
 					while (scanner.hasNext()) {
 						char next = scanner.next().charAt(0);
 						for (Item v : items) {
 							ExclusiveUnaryConstraint excConst;
 							scanner.useDelimiter(" ");
-							
+
 							if (v.name == next) {
 								System.out.print(v.name + " ");
 								ArrayList<Bag> excBags = new ArrayList<Bag>();
 
 								while (scanner.hasNext()) {
-									
+
 									char temp = scanner.next().charAt(0);
 									for (Bag b : bags) {
-										
+
 										if (b.name == temp) {
 											System.out.print(temp + " ");
 											excBags.add(b);
@@ -204,11 +273,9 @@ public class Input {
 									}
 								}
 
-								excConst = new ExclusiveUnaryConstraint(
-										TypeUnaryConstraint.exclusive, v,
-										excBags);
+								excConst = new ExclusiveUnaryConstraint(TypeUnaryConstraint.exclusive, v, excBags);
 								excConstraints.add(excConst);
-								
+
 								sorter.makeUnaryAndAdd(TypeUnaryConstraint.exclusive, v, excBags);
 
 								System.out.println();
@@ -217,7 +284,7 @@ public class Input {
 
 					}
 					break;
-				case 6:  // Binary Equals
+				case 6: // Binary Equals
 					EqualBinaryConstraint eqlBinConst;
 					ArrayList<Item> eqlVariables = new ArrayList<Item>();
 
@@ -235,16 +302,15 @@ public class Input {
 						}
 					}
 
-					eqlBinConst = new EqualBinaryConstraint(
-							TypeBinaryConstraint.equal, eqlVariables);
+					eqlBinConst = new EqualBinaryConstraint(TypeBinaryConstraint.equal, eqlVariables);
 					eqlBinConstraints.add(eqlBinConst);
-					
+
 					sorter.makeBinaryAndAdd(TypeBinaryConstraint.equal, eqlVariables, null);
 
 					System.out.println();
 
 					break;
-				case 7:  // Binary Not Equals
+				case 7: // Binary Not Equals
 					NonEqualBinaryConstraint nonEqlBinConst;
 					ArrayList<Item> nonEqlVariables = new ArrayList<Item>();
 
@@ -262,16 +328,15 @@ public class Input {
 						}
 					}
 
-					nonEqlBinConst = new NonEqualBinaryConstraint(
-							TypeBinaryConstraint.nonEqual, nonEqlVariables);
+					nonEqlBinConst = new NonEqualBinaryConstraint(TypeBinaryConstraint.nonEqual, nonEqlVariables);
 					nonEqlBinConstraints.add(nonEqlBinConst);
-					
+
 					sorter.makeBinaryAndAdd(TypeBinaryConstraint.nonEqual, nonEqlVariables, null);
 
 					System.out.println();
 
 					break;
-				case 8:  // Binary Mutual Exclusive
+				case 8: // Binary Mutual Exclusive
 					MutualExclusiveBinaryConstraint mutExBinConst;
 					ArrayList<Item> mutExVariables = new ArrayList<Item>();
 					ArrayList<Bag> mutExValues = new ArrayList<Bag>();
@@ -281,7 +346,6 @@ public class Input {
 					while (scanner.hasNext()) {
 						char next = scanner.next().charAt(0);
 
-						
 						for (Item i : items) {
 							if (i.name == next) {
 								mutExVariables.add(i);
@@ -289,7 +353,7 @@ public class Input {
 								System.out.print(next + " ");
 							}
 						}
-						
+
 						for (Bag b : bags) {
 							if (b.name == next) {
 								mutExValues.add(b);
@@ -299,22 +363,21 @@ public class Input {
 						}
 					}
 
-					mutExBinConst = new MutualExclusiveBinaryConstraint(
-							TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
+					mutExBinConst = new MutualExclusiveBinaryConstraint(TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
 					mutExcBinConstraints.add(mutExBinConst);
-					
+
 					sorter.makeBinaryAndAdd(TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
 
 					System.out.println();
 
 					break;
 				}
-			
+
 			scanner.close();
 		}
 
 		inputFile.close();
-		
+
 		sorter.setAllItems(items);
 		sorter.setAllBags(bags);
 	}
