@@ -1,3 +1,4 @@
+//Ryan Melville , Yuan Wen AI Prog 4
 package Main;
 
 import java.io.File;
@@ -9,7 +10,12 @@ import java.util.Scanner;
 
 import Unary.*;
 import Binary.*;
-
+/**
+ * Main class, takes in input from command line and creates constraints.
+ * passes constraints into Sorting Class.
+ * 
+ *
+ */
 public class Input {
 
 	static int section = 0;
@@ -24,8 +30,6 @@ public class Input {
 
 	public static void main(String[] args) throws IOException {
 		
-		//System.setOut(new PrintStream(new FileOutputStream("log.txt")));
-
 		FileWriter writer = new FileWriter("output.txt");
 
 		getInput(args);

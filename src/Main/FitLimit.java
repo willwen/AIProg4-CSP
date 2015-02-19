@@ -1,3 +1,5 @@
+//Ryan Melville , Yuan Wen AI Prog 4
+
 package Main;
 
 public class FitLimit {

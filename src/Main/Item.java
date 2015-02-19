@@ -1,3 +1,5 @@
+//Ryan Melville , Yuan Wen AI Prog 4
+
 package Main;
 
 public class Item {
@@ -8,18 +10,7 @@ public class Item {
 		this.name = name;
 		this.weight = weight;
 	}
-	
-//	public int compareTo(Item i){
-//		if(this.weight == i.weight
-//				&&
-//				this.name == i.name)
-//			return 0;
-//		
-//		else
-//			return -1;
-//		
-//	}
-	
+		
 	@Override
 	public boolean equals(Object other){
 		if (other == null) return false;
