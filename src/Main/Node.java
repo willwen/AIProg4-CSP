@@ -1,13 +1,14 @@
 package Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Node {
 	Item item;
-	ArrayList<Item> children;
+	HashMap<Item, ArrayList<Bag>> localMap;
 	    
-    Node (Item item, ArrayList<Item> children){
+    Node (Item item, HashMap<Item, ArrayList<Bag>> hashmap){
 		this.item = item;
-		this.children = children;
+		this.localMap = new HashMap<Item, ArrayList<Bag>> (hashmap);
 	}
 }

@@ -10,7 +10,7 @@ public class MutualExclusiveBinaryConstraint extends AbsBinaryConstraint {
 	public MutualExclusiveBinaryConstraint(TypeBinaryConstraint type, ArrayList<Item> variables, ArrayList<Bag> values) {
 		
 		super(type, variables);
-		values = new ArrayList<Bag>();
+		this.values = new ArrayList<Bag>(values);
 	}
 	public ArrayList<Bag> getValues() {
 		return values;

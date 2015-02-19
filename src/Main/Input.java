@@ -3,6 +3,7 @@ package Main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -24,21 +25,74 @@ public class Input {
 	public static void main(String[] args) throws IOException {
 		getInput(args);
 		
+		ArrayList<Item> hand = new ArrayList<Item>(sorter.allItems);
+		
 		sorter.initializeMap();
 		
 		sorter.trimMapUnary();
 		
-		//while(!sorter.allItems.isEmpty()){
-			for(Item i : sorter.allItems){
-				System.out.print("Item: " + i.name + " ");
-				System.out.print("Possible Bags:");
-				for(Bag b : sorter.initialMap.get(i)){
-					System.out.print(" " + b.name);
-				}
-				System.out.println();
+		for(Item i : sorter.allItems){
+			System.out.print("Item: " + i.name + " ");
+			System.out.print("Possible Bags:");
+			for(Bag b : sorter.initialMap.get(i)){
+				System.out.print(" " + b.name);
 			}
-		//}
+			System.out.println();
+		}
+		System.out.println();
+
+		Item initialItem = sorter.itemWithLeastRange(sorter.initialMap);
+		System.out.println("Item with least Range: " + initialItem.name);
+		
+//		HashMap <Item, ArrayList <Bag>> test = new HashMap <Item , ArrayList<Bag>>(sorter.initialMap);
+//		sorter.moveIsValid(initialItem, sorter.initialMap.get(initialItem).get(0), test);
+//		
+//		for(Item i : sorter.allItems){
+//			System.out.print("Item: " + i.name + " ");
+//			System.out.print("Possible Bags:");
+//			for(Bag b : test.get(i)){
+//				System.out.print(" " + b.name);
+//			}
+//			System.out.println();
+//		}
+		
+		Node tree = new Node(initialItem, sorter.initialMap);
+		whileLoop:
+		while(!hand.isEmpty()){
+			findItemLoop:
+			for(Item i : sorter.allItems){
+				if( i.name == tree.item.name){
+					for(Bag b : sorter.initialMap.get(i)){
+						//Willsfunction(i, b, localmap) return true or false if possible placement based on constraints
+						if(sorter.moveIsValid(i, b, tree.localMap)){
+							// Update Hashmap and assign(clone) to tree.localMap
+							
+							
+							for(Item val : sorter.allItems){
+								System.out.print("Item: " + val.name + " ");
+								System.out.print("Possible Bags:");
+								for(Bag bal : tree.localMap.get(val)){
+									System.out.print(" " + bal.name);
+								}
+								System.out.println();
+							}
+							System.out.println();
+							
+							Item returnedItem = sorter.itemWithLeastRange(tree.localMap);
+							if(returnedItem == null)
+								break whileLoop;
+							tree.item = returnedItem;
+							hand.remove(i);
+							
+							break findItemLoop;		
+						}						
+					}
+				}
+			}
+		}
 	}
+	
+
 
 	public static void getInput(String[] args) throws IOException {
 		Scanner inputFile = new Scanner(new File(args[0]));
@@ -249,7 +303,7 @@ public class Input {
 							TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
 					mutExcBinConstraints.add(mutExBinConst);
 					
-					sorter.makeBinaryAndAdd(TypeBinaryConstraint.equal, mutExVariables, mutExValues);
+					sorter.makeBinaryAndAdd(TypeBinaryConstraint.mutualEx, mutExVariables, mutExValues);
 
 					System.out.println();
 
