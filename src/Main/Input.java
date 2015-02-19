@@ -23,6 +23,8 @@ public class Input {
 	static Sorting sorter = new Sorting();
 
 	public static void main(String[] args) throws IOException {
+		
+		//System.setOut(new PrintStream(new FileOutputStream("log.txt")));
 
 		FileWriter writer = new FileWriter("output.txt");
 
@@ -33,6 +35,8 @@ public class Input {
 		sorter.initializeMap();
 
 		sorter.trimMapUnary();
+		
+		System.out.println("Initial HashMap:");
 
 		for (Item i : sorter.allItems) {
 			System.out.print("Item: " + i.name + " ");
@@ -64,6 +68,9 @@ public class Input {
 					if (emptyBags.size() > 0) {
 						for (Bag b : emptyBags) {
 							if (sorter.moveIsValid(i, b, tree.localMap)) {
+								System.out.println("Assigned Item " + i.name + " to Bag " + b.name);
+								System.out.println();
+								System.out.println("New HashMap:");
 								for (Item val : sorter.allItems) {
 									System.out.print("Item: " + val.name + " ");
 									System.out.print("Possible Bags:");
@@ -75,12 +82,15 @@ public class Input {
 								System.out.println();
 
 								Item returnedItem = sorter.itemWithLeastRange(tree.localMap);
+								
 								if (returnedItem == null) {
 									madeMove = true;
 									break whileLoop;
 								}
 								tree.item = returnedItem;
 								hand.remove(i);
+								
+								System.out.println("Item with least Range: " + returnedItem.name);
 
 								madeMove = true;
 
@@ -377,6 +387,8 @@ public class Input {
 		}
 
 		inputFile.close();
+		
+		System.out.println();
 
 		sorter.setAllItems(items);
 		sorter.setAllBags(bags);

@@ -1,0 +1,209 @@
+Section 1:##### - variables
+C 6
+D 3
+E 5
+F 8
+G 15
+H 12
+I 7
+J 19
+K 4
+L 9
+Section 2:##### - values
+p 32
+q 25
+r 20
+x 14
+Section 3:##### - fitting limits
+2 3
+Section 4:##### - unary inclusive
+C q r 
+D p q 
+H q r x 
+K p q 
+Section 5:##### - unary exclusive
+E p q r 
+F q 
+G p r 
+I x 
+Section 6:##### - binary equals
+L J 
+I H 
+Section 7:##### - binary not equals
+D K 
+I E 
+H F 
+Section 8:##### - mutual exclusive
+D K p r 
+I H q r 
+L F q x 
+
+Initial HashMap:
+Item: C Possible Bags: q r
+Item: D Possible Bags: p q
+Item: E Possible Bags: x
+Item: F Possible Bags: p r x
+Item: G Possible Bags: q x
+Item: H Possible Bags: q r x
+Item: I Possible Bags: p q r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p q
+Item: L Possible Bags: p q r x
+
+Item with least Range: C
+Assigned Item C to Bag q
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: p q
+Item: E Possible Bags: x
+Item: F Possible Bags: p r x
+Item: G Possible Bags: q x
+Item: H Possible Bags: q r x
+Item: I Possible Bags: p q r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p q
+Item: L Possible Bags: p q r x
+
+Item with least Range: D
+Assigned Item D to Bag q
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: p r x
+Item: G Possible Bags: q x
+Item: H Possible Bags: q r x
+Item: I Possible Bags: p q r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p
+Item: L Possible Bags: p q r x
+
+Item with least Range: G
+Assigned Item G to Bag q
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: p r x
+Item: G Possible Bags: q
+Item: H Possible Bags: q r x
+Item: I Possible Bags: p q r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p
+Item: L Possible Bags: p q r x
+
+Item with least Range: F
+Assigned Item F to Bag r
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: r
+Item: G Possible Bags: q
+Item: H Possible Bags: q x
+Item: I Possible Bags: p q r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p
+Item: L Possible Bags: p q r x
+
+Item with least Range: H
+Assigned Item H to Bag p
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: r
+Item: G Possible Bags: q
+Item: H Possible Bags: p
+Item: I Possible Bags: p q r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p
+Item: L Possible Bags: p q r x
+
+Item with least Range: I
+Assigned Item I to Bag r
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: r
+Item: G Possible Bags: q
+Item: H Possible Bags: p
+Item: I Possible Bags: r
+Item: J Possible Bags: p q r x
+Item: K Possible Bags: p
+Item: L Possible Bags: p q r x
+
+Item with least Range: J
+Assigned Item J to Bag p
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: r
+Item: G Possible Bags: q
+Item: H Possible Bags: p
+Item: I Possible Bags: r
+Item: J Possible Bags: p
+Item: K Possible Bags: p
+Item: L Possible Bags: p q r x
+
+Item with least Range: L
+Assigned Item L to Bag x
+
+New HashMap:
+Item: C Possible Bags: q
+Item: D Possible Bags: q
+Item: E Possible Bags: x
+Item: F Possible Bags: r
+Item: G Possible Bags: q
+Item: H Possible Bags: p
+Item: I Possible Bags: r
+Item: J Possible Bags: p
+Item: K Possible Bags: p
+Item: L Possible Bags: x
+
+Bag: p	-> current weight: 31
+	-> max weight: 32
+	-> remaining weight: 1
+	-> items in bag: 2
+Bag: q	-> current weight: 24
+	-> max weight: 25
+	-> remaining weight: 1
+	-> items in bag: 3
+Bag: r	-> current weight: 15
+	-> max weight: 20
+	-> remaining weight: 5
+	-> items in bag: 2
+Bag: x	-> current weight: 9
+	-> max weight: 14
+	-> remaining weight: 5
+	-> items in bag: 1
+
+p H J K
+number of items: 2
+total weight: 31/32
+wasted capacity: 1
+
+q C D G
+number of items: 3
+total weight: 24/25
+wasted capacity: 1
+
+r F I
+number of items: 2
+total weight: 15/20
+wasted capacity: 5
+
+x E L
+number of items: 1
+total weight: 9/14
+wasted capacity: 5
+
